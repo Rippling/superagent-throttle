@@ -382,10 +382,10 @@ throttle.options({active: true})</p>
         <span class="hljs-keyword">if</span> (tabData.timestamp &lt; <span class="hljs-built_in">Date</span>.now() - <span class="hljs-number">10</span> * <span class="hljs-number">1000</span>) {
           <span class="hljs-keyword">continue</span>
         }
-        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'current: '</span>, current)
         current += tabData.current
       }
     }
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'total current: '</span>, current)
     <span class="hljs-keyword">return</span> current
   }
 
@@ -421,7 +421,7 @@ next
         </td>
         <td class="code highlight">
           <pre class="javascript">  next () {
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'next request'</span>, <span class="hljs-keyword">this</span>._buffer)
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'next:'</span>, <span class="hljs-keyword">this</span>._buffer)
     <span class="hljs-keyword">let</span> throttle = <span class="hljs-keyword">this</span>
 </pre>
         </td>
@@ -640,7 +640,6 @@ available rate)</li>
         </td>
         <td class="code highlight">
           <pre class="javascript">  cycle (request) {
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'cycling request'</span>)
     <span class="hljs-keyword">let</span> throttle = <span class="hljs-keyword">this</span>
     <span class="hljs-keyword">if</span> (request) {
       throttle._buffer.push(request)
@@ -759,7 +758,6 @@ send
         </td>
         <td class="code highlight">
           <pre class="javascript">  send (request) {
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'sending request'</span>)
     <span class="hljs-keyword">let</span> throttle = <span class="hljs-keyword">this</span>
     throttle.serial(request, <span class="hljs-literal">true</span>)
 
