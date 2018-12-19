@@ -379,6 +379,7 @@ throttle.options({active: true})</p>
           <span class="hljs-keyword">continue</span>
         }
         <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'tab current: '</span>, tabData.current, key === <span class="hljs-keyword">this</span>._tabId)
+        <span class="hljs-built_in">console</span>.info(<span class="hljs-string">'time diff'</span>, tabData.timestamp, <span class="hljs-built_in">Date</span>.now(), <span class="hljs-built_in">Date</span>.now() - tabData.timestamp)
         <span class="hljs-keyword">if</span> (tabData.timestamp &lt; <span class="hljs-built_in">Date</span>.now() - <span class="hljs-number">10</span> * <span class="hljs-number">1000</span>) {
           <span class="hljs-keyword">continue</span>
         }
