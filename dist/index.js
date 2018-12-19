@@ -17,29 +17,39 @@ let defaults = {
   // ms per `rate` requests
   ratePer: 40000,
   // max concurrent requests
-  concurrent: 20
-};
+  concurrent: 20,
+  // Enable/Disable cross-tab concurrency
+  acrossTabs: false,
+  // Will be used while storing data in localStorage
+  tabIdPrefix: '_tab',
+  // If `recentActionAt` is `tabExpire` ms old, assume it's dead. So ignore it's concurrency
+  tabExpire: 60 * 1000
 
-/**
- * ## Throttle
- * The throttle object.
- *
- * @class
- * @param {object} options - key value options
- */
-class Throttle extends _events2.default {
+  /**
+   * ## Throttle
+   * The throttle object.
+   *
+   * @class
+   * @param {object} options - key value options
+   */
+};class Throttle extends _events2.default {
   constructor(options) {
     super();
     // instance properties
     this._options({
       _requestTimes: [0],
-      _current: 0,
       _buffer: [],
       _serials: {},
       _timeout: false
     });
     this._options(defaults);
     this._options(options);
+
+    if (!window.localStorage) {
+      this._options({ acrossTabs: false });
+    } else {
+      this._initAcrossTabs();
+    }
   }
 
   /**
@@ -56,6 +66,20 @@ class Throttle extends _events2.default {
         this[property] = options[property];
       }
     }
+  }
+
+  /**
+   * ## _initAcrossTabs
+   * Setup cross-tab concurrency feature
+   */
+  _initAcrossTabs() {
+    this._tabId = this.tabIdPrefix + '.' + Date.now();
+    this.setCurrent(0);
+    function onload() {
+      window.localStorage.removeItem(this._tabId);
+    }
+    // clear localStorage
+    window.addEventListener('unload', onload.bind(this));
   }
 
   /**
@@ -83,6 +107,61 @@ class Throttle extends _events2.default {
   }
 
   /**
+   * ## setCurrent
+   * Sets concurrency count in localStorage
+   *
+   * @param {Number} current concurrency count
+   */
+  setCurrent(current) {
+    const value = {
+      current: current,
+      recentActionAt: Date.now() // Always update action timestamp
+    };
+    window.localStorage.setItem(this._tabId, JSON.stringify(value));
+  }
+
+  /**
+   * ## getCurrent
+   * Computes current concurrency level
+   */
+  getCurrent() {
+    let current = 0;
+    for (const key in window.localStorage) {
+      if (Object.hasOwnProperty.call(window.localStorage, key) && key.indexOf(this.tabIdPrefix) === 0) {
+        let tabData = window.localStorage.getItem(key);
+
+        try {
+          if (!tabData) {
+            console.assert(false, 'tabData structure mis-matched: ' + JSON.stringify(tabData));
+            throw new Error('catch me');
+          }
+          tabData = JSON.parse(tabData);
+        } catch (ex) {
+          continue;
+        }
+        // Check whether other tabs are dead or not. If dead, ignore their concurrency count
+        if (key !== this._tabId && tabData.recentActionAt < Date.now() - this.tabExpire) {
+          continue;
+        }
+        current += tabData.current;
+      }
+    }
+    return current;
+  }
+
+  /**
+   * Updates current tab concurrency by adding/substracting the current count
+   * @param {Number} value - Negative/Positive number
+   */
+  addAndSetCurrent(value) {
+    let tabData = window.localStorage.getItem(this._tabId);
+    tabData = JSON.parse(tabData);
+    const current = tabData.current;
+    this.setCurrent(current + value);
+    return current + value;
+  }
+
+  /**
    * ## next
    * checks whether instance has available capacity and calls throttle.send()
    *
@@ -97,7 +176,7 @@ class Throttle extends _events2.default {
     // paused
     !throttle.active ||
     // at concurrency limit
-    throttle._current >= throttle.concurrent ||
+    throttle.getCurrent() >= throttle.concurrent ||
     // less than `ratePer`
     throttle._isRateBound() ||
     // something waiting in the throttle
@@ -212,13 +291,13 @@ class Throttle extends _events2.default {
 
     // declare callback within this enclosure, for access to throttle & request
     function cleanup(err, response) {
-      throttle._current -= 1;
+      throttle.addAndSetCurrent(-1);
       if (err && _events2.default.listenerCount(throttle, 'error')) {
         throttle.emit('error', response);
       }
       throttle.emit('received', request);
 
-      if (!throttle._buffer.length && !throttle._current) {
+      if (!throttle._buffer.length && !throttle.getCurrent()) {
         throttle.emit('drained');
       }
       throttle.serial(request, false);
@@ -230,7 +309,7 @@ class Throttle extends _events2.default {
     // original `request.end` was stored at `request._maskedEnd`
     request._maskedEnd(cleanup);
     throttle._requestTimes.push(Date.now());
-    throttle._current += 1;
+    throttle.addAndSetCurrent(1);
     this.emit('sent', request);
   }
 
