@@ -72,7 +72,7 @@ var Throttle = function (_EventEmitter) {
     value: function isLocalStorageEnabled() {
       try {
         if (typeof window !== 'undefined') {
-          return !!window.localStorages;
+          return !!window.localStorage;
         }
         return false;
       } catch (e) {

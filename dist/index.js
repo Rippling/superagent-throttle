@@ -55,7 +55,7 @@ let defaults = {
   isLocalStorageEnabled() {
     try {
       if (typeof window !== 'undefined') {
-        return !!window.localStorages;
+        return !!window.localStorage;
       }
       return false;
     } catch (e) {
