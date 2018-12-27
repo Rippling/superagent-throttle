@@ -59,7 +59,7 @@ var Throttle = function (_EventEmitter) {
     _this._options(defaults);
     _this._options(options);
 
-    if (!window.localStorage) {
+    if (!_this.isLocalStorageEnabled()) {
       _this._options({ acrossTabs: false });
     } else {
       _this._initAcrossTabs();
@@ -67,17 +67,29 @@ var Throttle = function (_EventEmitter) {
     return _this;
   }
 
-  /**
-   * ## _options
-   * updates options on instance
-   *
-   * @method
-   * @param {Object} options - key value object
-   * @returns null
-   */
-
-
   _createClass(Throttle, [{
+    key: 'isLocalStorageEnabled',
+    value: function isLocalStorageEnabled() {
+      try {
+        if (typeof window !== 'undefined') {
+          return !!window.localStorages;
+        }
+        return false;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    /**
+     * ## _options
+     * updates options on instance
+     *
+     * @method
+     * @param {Object} options - key value object
+     * @returns null
+     */
+
+  }, {
     key: '_options',
     value: function _options(options) {
       for (var property in options) {

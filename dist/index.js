@@ -45,10 +45,21 @@ let defaults = {
     this._options(defaults);
     this._options(options);
 
-    if (!window.localStorage) {
+    if (!this.isLocalStorageEnabled()) {
       this._options({ acrossTabs: false });
     } else {
       this._initAcrossTabs();
+    }
+  }
+
+  isLocalStorageEnabled() {
+    try {
+      if (typeof window !== 'undefined') {
+        return !!window.localStorages;
+      }
+      return false;
+    } catch (e) {
+      return false;
     }
   }
 
