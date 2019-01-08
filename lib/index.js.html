@@ -280,21 +280,10 @@ Throttle
     <span class="hljs-keyword">this</span>._options(defaults)
     <span class="hljs-keyword">this</span>._options(options)
 
-    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.isLocalStorageEnabled()) {
+    <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">window</span>.localStorage) {
       <span class="hljs-keyword">this</span>._options({ <span class="hljs-attr">acrossTabs</span>: <span class="hljs-literal">false</span> })
     } <span class="hljs-keyword">else</span> {
       <span class="hljs-keyword">this</span>._initAcrossTabs()
-    }
-  }
-
-  isLocalStorageEnabled () {
-    <span class="hljs-keyword">try</span> {
-      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-built_in">window</span> !== <span class="hljs-string">'undefined'</span>) {
-        <span class="hljs-keyword">return</span> !!<span class="hljs-built_in">window</span>.localStorage
-      }
-      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
-    } <span class="hljs-keyword">catch</span> (e) {
-      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
     }
   }
 
@@ -572,6 +561,22 @@ getCurrent
         <td class="code highlight">
           <pre class="javascript">  addAndSetCurrent (value) {
     <span class="hljs-keyword">let</span> tabData = <span class="hljs-built_in">window</span>.localStorage.getItem(<span class="hljs-keyword">this</span>._tabId)
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-20" id="section-20"></a>
+</div>
+<p>If tabData is null/undefined, It means the tab is about to unload/close.</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">if</span> (tabData === <span class="hljs-literal">null</span> || tabData === <span class="hljs-literal">undefined</span>) {
+      <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>
+    }
     tabData = <span class="hljs-built_in">JSON</span>.parse(tabData)
     <span class="hljs-keyword">const</span> current = tabData.current
     <span class="hljs-keyword">this</span>.setCurrent(current + value)
@@ -611,7 +616,7 @@ next
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-21" id="section-21"></a>
+  <a class="pilcrow" href="#section-22" id="section-22"></a>
 </div>
 <p>make requestTimes <code>throttle.rate</code> long. Oldest request will be 0th index</p>
 
@@ -628,7 +633,7 @@ next
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-22" id="section-22"></a>
+  <a class="pilcrow" href="#section-23" id="section-23"></a>
 </div>
 <p>paused</p>
 
@@ -642,7 +647,7 @@ next
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-23" id="section-23"></a>
+  <a class="pilcrow" href="#section-24" id="section-24"></a>
 </div>
 <p>at concurrency limit</p>
 
@@ -656,7 +661,7 @@ next
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-24" id="section-24"></a>
+  <a class="pilcrow" href="#section-25" id="section-25"></a>
 </div>
 <p>less than <code>ratePer</code></p>
 
@@ -670,7 +675,7 @@ next
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-25" id="section-25"></a>
+  <a class="pilcrow" href="#section-26" id="section-26"></a>
 </div>
 <p>something waiting in the throttle</p>
 
@@ -834,7 +839,7 @@ available rate)</li>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-29" id="section-29"></a>
+  <a class="pilcrow" href="#section-30" id="section-30"></a>
 </div>
 <p>fire requests
 throttle.next will return false if there's no capacity or throttle is
@@ -851,7 +856,7 @@ drained</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-30" id="section-30"></a>
+  <a class="pilcrow" href="#section-31" id="section-31"></a>
 </div>
 <p>if bound by rate, set timeout to reassess later.</p>
 
@@ -866,7 +871,7 @@ drained</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-31" id="section-31"></a>
+  <a class="pilcrow" href="#section-32" id="section-32"></a>
 </div>
 <p>defined rate</p>
 
@@ -880,7 +885,7 @@ drained</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-32" id="section-32"></a>
+  <a class="pilcrow" href="#section-33" id="section-33"></a>
 </div>
 <p>less ms elapsed since oldest request</p>
 
@@ -894,7 +899,7 @@ drained</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-33" id="section-33"></a>
+  <a class="pilcrow" href="#section-34" id="section-34"></a>
 </div>
 <p>plus 1 ms to ensure you don't fire a request exactly ratePer ms later</p>
 
@@ -949,7 +954,7 @@ send
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-35" id="section-35"></a>
+  <a class="pilcrow" href="#section-36" id="section-36"></a>
 </div>
 <p>declare callback within this enclosure, for access to throttle &amp; request</p>
 
@@ -977,7 +982,7 @@ send
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-36" id="section-36"></a>
+  <a class="pilcrow" href="#section-37" id="section-37"></a>
 </div>
 <p>original <code>callback</code> was stored at <code>request._maskedCallback</code></p>
 
@@ -993,7 +998,7 @@ send
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-37" id="section-37"></a>
+  <a class="pilcrow" href="#section-38" id="section-38"></a>
 </div>
 <p>original <code>request.end</code> was stored at <code>request._maskedEnd</code></p>
 
@@ -1047,7 +1052,7 @@ plugin
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-39" id="section-39"></a>
+  <a class="pilcrow" href="#section-40" id="section-40"></a>
 </div>
 <p>let patch = function(request) {</p>
 
@@ -1063,7 +1068,7 @@ plugin
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-40" id="section-40"></a>
+  <a class="pilcrow" href="#section-41" id="section-41"></a>
 </div>
 <p>replace request.end</p>
 
@@ -1078,7 +1083,7 @@ plugin
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-41" id="section-41"></a>
+  <a class="pilcrow" href="#section-42" id="section-42"></a>
 </div>
 <p>store callback as superagent does</p>
 
@@ -1092,7 +1097,7 @@ plugin
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-42" id="section-42"></a>
+  <a class="pilcrow" href="#section-43" id="section-43"></a>
 </div>
 <p>place this request in the queue</p>
 
