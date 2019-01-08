@@ -166,6 +166,10 @@ let defaults = {
    */
   addAndSetCurrent(value) {
     let tabData = window.localStorage.getItem(this._tabId);
+    // If tabData is null/undefined, It means the tab is about to unload/close.
+    if (tabData === null || tabData === undefined) {
+      return 0;
+    }
     tabData = JSON.parse(tabData);
     const current = tabData.current;
     this.setCurrent(current + value);

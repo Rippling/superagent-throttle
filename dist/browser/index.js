@@ -201,6 +201,10 @@ var Throttle = function (_EventEmitter) {
     key: 'addAndSetCurrent',
     value: function addAndSetCurrent(value) {
       var tabData = window.localStorage.getItem(this._tabId);
+      // If tabData is null/undefined, It means the tab is about to unload/close.
+      if (tabData === null || tabData === undefined) {
+        return 0;
+      }
       tabData = JSON.parse(tabData);
       var current = tabData.current;
       this.setCurrent(current + value);
