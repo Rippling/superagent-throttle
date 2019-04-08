@@ -109,11 +109,12 @@ var Throttle = function (_EventEmitter) {
     value: function _initAcrossTabs() {
       this._tabId = this.tabIdPrefix + '.' + Date.now();
       this.setCurrent(0);
-      function onload() {
+      this.clearOld();
+      function onUnload() {
         window.localStorage.removeItem(this._tabId);
       }
       // clear localStorage
-      window.addEventListener('unload', onload.bind(this));
+      window.addEventListener('unload', onUnload.bind(this));
     }
 
     /**
@@ -158,6 +159,26 @@ var Throttle = function (_EventEmitter) {
         recentActionAt: Date.now() // Always update action timestamp
       };
       window.localStorage.setItem(this._tabId, JSON.stringify(value));
+    }
+
+    /**
+     * clear Tab Data older than 7 days 
+     */
+
+  }, {
+    key: 'clearOld',
+    value: function clearOld() {
+      var days = 7; // Days you want to subtract
+      var referenceTime = Date.now() - days * 24 * 60 * 60 * 1000;
+      for (var key in window.localStorage) {
+        if (Object.hasOwnProperty.call(window.localStorage, key) && key.indexOf(this.tabIdPrefix) === 0) {
+          var tabData = window.localStorage.getItem(key);
+          var tabDate = Number(key.split('.')[1]);
+          if (tabDate < referenceTime) {
+            window.localStorage.removeItem(key);
+          }
+        }
+      }
     }
 
     /**
