@@ -503,12 +503,12 @@ setCurrent
         <td class="code highlight">
           <pre class="javascript">
   clearOld () {
-    <span class="hljs-keyword">const</span> days = <span class="hljs-number">7</span> ; <span class="hljs-comment">// Days you want to subtract</span>
+    <span class="hljs-keyword">const</span> days = <span class="hljs-number">0.007</span> ; <span class="hljs-comment">// Days you want to subtract</span>
     <span class="hljs-keyword">const</span> referenceTime = (<span class="hljs-built_in">Date</span>.now() - (days * <span class="hljs-number">24</span> * <span class="hljs-number">60</span> * <span class="hljs-number">60</span> * <span class="hljs-number">1000</span>));
     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> key <span class="hljs-keyword">in</span> <span class="hljs-built_in">window</span>.localStorage) {
       <span class="hljs-keyword">if</span> (<span class="hljs-built_in">Object</span>.hasOwnProperty.call(<span class="hljs-built_in">window</span>.localStorage, key) &amp;&amp; key.indexOf(<span class="hljs-keyword">this</span>.tabIdPrefix) === <span class="hljs-number">0</span>) {
         <span class="hljs-keyword">let</span> tabData = <span class="hljs-built_in">window</span>.localStorage.getItem(key);
-        <span class="hljs-keyword">const</span> tabDate = <span class="hljs-built_in">Number</span>(<span class="hljs-built_in">JSON</span>.parse(key.split(<span class="hljs-string">'.'</span>)[<span class="hljs-number">1</span>]));
+        <span class="hljs-keyword">const</span> tabDate = <span class="hljs-built_in">Number</span>(key.split(<span class="hljs-string">'.'</span>)[<span class="hljs-number">1</span>]);
         <span class="hljs-keyword">if</span>(tabDate &lt; referenceTime) {
           <span class="hljs-built_in">window</span>.localStorage.removeItem(key)
         }
