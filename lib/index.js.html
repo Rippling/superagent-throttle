@@ -365,7 +365,7 @@ _initAcrossTabs
     <span class="hljs-keyword">this</span>._tabId = <span class="hljs-keyword">this</span>.tabIdPrefix + <span class="hljs-string">'.'</span> + <span class="hljs-built_in">Date</span>.now();
     <span class="hljs-keyword">this</span>.setCurrent(<span class="hljs-number">0</span>)
     <span class="hljs-keyword">this</span>.clearOld();
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onload</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onUnload</span> (<span class="hljs-params"></span>) </span>{
       <span class="hljs-built_in">window</span>.localStorage.removeItem(<span class="hljs-keyword">this</span>._tabId)
     }
 </pre>
@@ -381,7 +381,7 @@ _initAcrossTabs
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">    <span class="hljs-built_in">window</span>.addEventListener(<span class="hljs-string">'unload'</span>, onload.bind(<span class="hljs-keyword">this</span>))
+          <pre class="javascript">    <span class="hljs-built_in">window</span>.addEventListener(<span class="hljs-string">'unload'</span>, onUnload.bind(<span class="hljs-keyword">this</span>))
   }
 
 </pre>
